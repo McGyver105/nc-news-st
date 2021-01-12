@@ -1,4 +1,4 @@
-const { changeTimeStamp, formatDataTimeStamp } = require('../utils/data-manipulation');
+const { changeTimeStamp, formatDataTimeStamp, createArticlesLookup, formatArticlesData } = require('../utils/data-manipulation');
 
 const {
   topicsData,
@@ -22,8 +22,9 @@ exports.seed = function (knex) {
       return knex('articles').insert(formattedArticles).returning("*");
     })
     .then((response) => {
-      console.log(response);
       const articleLookup = createArticlesLookup(response);
+      const formattedComments = formatArticlesData(commentsData, articleLookup);
+      return knex('comments').insert(formattedComments).returning('*');
     })
     // for comments data, need to convert belongs to article id
     //created by is author

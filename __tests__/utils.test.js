@@ -1,15 +1,16 @@
-const { changeTimeStamp, formatDataTimeStamp, createArticlesLookup } = require('../db/utils/data-manipulation');
+const { changeTimeStamp, formatDataTimeStamp, createArticlesLookup, formatArticlesData } = require('../db/utils/data-manipulation');
+const { lookup } = require('../db/utils/lookuptestobj');
 
-xdescribe('changeTimeStamp', () => {
+describe('changeTimeStamp', () => {
     describe('Functionalty', () => {
-        it('returns a date from the input number', () => {
+        it('returns a date object from the input number', () => {
             const input = 1471522072389
-            expect(changeTimeStamp(input)).toBe(new Date(input))
+            expect(typeof changeTimeStamp(input)).toBe('object')
         })
     })
 })
 
-xdescribe('formatDataTimeStamp', () => {
+describe('formatDataTimeStamp', () => {
     describe('Functionality', () => {
         it('returns array with empty objects with no articles input', () => {
             const input = [];
@@ -28,7 +29,7 @@ xdescribe('formatDataTimeStamp', () => {
                 topic: 'cooking',
                 author: 'tickle122',
                 body: 'The chef',
-                created_at: "Fri Apr 14 2017 10:56:23 GMT+0100 (British Summer Time)"
+                created_at: new Date(1492163783248)
             }])
             
         })
@@ -51,14 +52,14 @@ xdescribe('formatDataTimeStamp', () => {
                 topic: 'cooking',
                 author: 'tickle122',
                 body: 'The chef',
-                created_at: "Fri Apr 14 2017 10:56:23 GMT+0100 (British Summer Time)"
+                created_at: new Date(1492163783248)
             },
             {
                 title: 'The chef',
                 topics: 'writing',
                 author: 'Nate',
                 body: 'good',
-                created_at: "Fri Feb 13 2009 23:31:30 GMT+0000 (Greenwich Mean Time)",
+                created_at: new Date(1234567890123),
             }])
         })
     })
@@ -104,7 +105,7 @@ xdescribe('formatDataTimeStamp', () => {
                 topic: 'cooking',
                 author: 'tickle122',
                 body: 'The chef',
-                created_at: "Fri Apr 14 2017 10:56:23 GMT+0100 (British Summer Time)"
+                created_at: new Date(1492163783248)
             }]
             expect(formatDataTimeStamp(input, changeTimeStamp)).toEqual(output)
             expect(formatDataTimeStamp(input, changeTimeStamp)).toEqual(output)
@@ -169,6 +170,65 @@ describe('createArticlesLookup', () => {
        created_at: 123456123456}];
        createArticlesLookup(input);
        expect(input).toEqual(copyOfInput);
+        })
+    })
+})
+
+describe('formatArticlesData', () => {
+    describe('Functionality', () => {
+        it('returns an array', () => {
+            const input = []
+            expect(Array.isArray(formatArticlesData(input, lookup))).toBe(true);
+        })
+        it('returns an array with 1 comment formatted correctly', () => {
+            const input = [{
+                body: 'Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.',
+                belongs_to: 'Making sense of Redux',
+                created_by: 'grumpy19',
+                votes: 7,
+                created_at: 1478813209256,
+            }]
+            const output = [{
+                body: 'Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.',
+                article_id: 4,
+                author: 'grumpy19',
+                votes: 7,
+                created_at: new Date(1478813209256),
+            }]
+            expect(formatArticlesData(input, lookup)).toEqual(output);
+        })
+        it('returns an array with multiple comments formatted correctly', () => {
+            const input = [
+            {
+                body: 'Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.',
+                belongs_to: 'Making sense of Redux',
+                created_by: 'grumpy19',
+                votes: 7,
+                created_at: 1478813209256,
+            },
+            {
+                body: 'This is a comment',
+                belongs_to: 'Stone Soup',
+                created_by: 'tickle122',
+                votes: 2,
+                created_at: 9340927408223,
+                }]
+            const output = [
+            {
+                body: 'Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.',
+                article_id: 4,
+                author: 'grumpy19',
+                votes: 7,
+                created_at: new Date(1478813209256),
+            },
+            {
+                body: 'This is a comment',
+                article_id: 35,
+                author: 'tickle122',
+                votes: 2,
+                created_at: new Date(9340927408223),
+                }]
+            expect(formatArticlesData(input, lookup)).toEqual(output);
         })
     })
 })
