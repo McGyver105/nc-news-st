@@ -15,4 +15,11 @@ const formatDataTimeStamp = (rawData, timeStampFunc) => {
     return newArr;
 }
 
-module.exports = { changeTimeStamp, formatDataTimeStamp };
+const createArticlesLookup = (articlesRows) => {
+    const lookupObj = {};
+    for (let article of articlesRows) {
+        lookupObj[article.title] = article.article_id};
+    return lookupObj;
+}
+
+module.exports = { changeTimeStamp, formatDataTimeStamp, createArticlesLookup };

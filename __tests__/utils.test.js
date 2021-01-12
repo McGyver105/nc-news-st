@@ -1,6 +1,6 @@
-const { changeTimeStamp, formatDataTimeStamp } = require('../db/utils/data-manipulation');
+const { changeTimeStamp, formatDataTimeStamp, createArticlesLookup } = require('../db/utils/data-manipulation');
 
-describe('changeTimeStamp', () => {
+xdescribe('changeTimeStamp', () => {
     describe('Functionalty', () => {
         it('returns a date from the input number', () => {
             const input = 1471522072389
@@ -9,7 +9,7 @@ describe('changeTimeStamp', () => {
     })
 })
 
-describe('formatDataTimeStamp', () => {
+xdescribe('formatDataTimeStamp', () => {
     describe('Functionality', () => {
         it('returns array with empty objects with no articles input', () => {
             const input = [];
@@ -110,6 +110,65 @@ describe('formatDataTimeStamp', () => {
             expect(formatDataTimeStamp(input, changeTimeStamp)).toEqual(output)
             expect(formatDataTimeStamp(input, changeTimeStamp)).toEqual(output)
             expect(formatDataTimeStamp(input, changeTimeStamp)).toEqual(output)
+        })
+    })
+})
+
+describe('createArticlesLookup', () => {
+    describe('functionality', () => {
+        it('Returns an object, not an array', () => {
+            const input = [];
+            expect(createArticlesLookup(input)).toEqual({});
+            expect(Array.isArray(createArticlesLookup(input))).toBe(false);
+        })
+        it('Returns an array with one object with the converted id', () => {
+            const input = [{article_id: 1,
+                 title: 'title_value',
+                    body: 'body',
+                    votes: 0,
+                    topic: 'topic',
+                author: 'author',
+            created_at: 123456123456}];
+            const output = {title_value: 1};
+            expect(createArticlesLookup(input)).toEqual(output);
+        })
+        it('Returns a lookup object when passed multiple articles', () => {
+            const input = [{article_id: 1,
+                title: 'title_value',
+                   body: 'body',
+                   votes: 0,
+                   topic: 'topic',
+               author: 'author',
+           created_at: 123456123456},
+                {article_id: 2,
+                    title: 'title_value2',
+                    body: 'body2',
+                    votes: 0,
+                    topic: 'topic2',
+                author: 'author2',
+            created_at: 123456123456}];
+       const output = {title_value: 1, title_value2: 2};
+       expect(createArticlesLookup(input)).toEqual(output);
+        })
+    })
+    describe('pure function', () => {
+        it('Does not mutate the input', () => {
+            const input = [{article_id: 1,
+                title: 'title_value',
+                   body: 'body',
+                   votes: 0,
+                   topic: 'topic',
+               author: 'author',
+           created_at: 123456123456}];
+           const copyOfInput = [{article_id: 1,
+            title: 'title_value',
+               body: 'body',
+               votes: 0,
+               topic: 'topic',
+           author: 'author',
+       created_at: 123456123456}];
+       createArticlesLookup(input);
+       expect(input).toEqual(copyOfInput);
         })
     })
 })

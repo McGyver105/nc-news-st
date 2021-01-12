@@ -19,6 +19,13 @@ exports.seed = function (knex) {
     })
     .then(() => {
       const formattedArticles = formatDataTimeStamp(articlesData, changeTimeStamp);
-      return knex('articles').insert(formattedArticles);
+      return knex('articles').insert(formattedArticles).returning("*");
     })
+    .then((response) => {
+      console.log(response);
+      const articleLookup = createArticlesLookup(response);
+    })
+    // for comments data, need to convert belongs to article id
+    //created by is author
+    //created at is timestamp
 };
