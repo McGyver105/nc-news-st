@@ -7,7 +7,7 @@ app.use(express.json());
 
 app.use('/api', apiRouter);
 app.all('/*', (req, res, next) => {
-    res.sendStatus(404);
+    res.sendStatus(500);
 })
 
 app.use(handleCustomErrors);

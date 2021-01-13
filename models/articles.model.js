@@ -23,4 +23,17 @@ const addCommentCount = (article, article_id) => {
     })
 }
 
-module.exports = { selectArticleById, addCommentCount };
+const insertNewVote = (newVote, article_id) => {
+    return connection('articles')
+        .update({
+            'votes': newVote
+        })
+        .where('articles.article_id', '=', article_id)
+        .returning('*')
+        .then(([article]) => {
+            return article;
+    })
+}
+
+
+module.exports = { selectArticleById, addCommentCount, insertNewVote };
