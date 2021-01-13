@@ -27,4 +27,26 @@ describe('/api', () => {
             .expect(404);
         })
     })
+    describe('/users', () => {
+        it('GET - 200 - responds with a user object for that id', () => {
+            return request(app)
+                .get('/api/users/rogersop')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.username).toHaveLength(1)
+                    expect(body.username[0]).toEqual(
+                        expect.objectContaining({
+                            username: expect.any(String),
+                            avatar_url: expect.any(String),
+                            name: expect.any(String)
+                        })
+                    )
+            })
+        })
+        it('GET - 404 - responds with not found for invalid usernames', () => {
+            return request(app)
+                .get('/api/users/tickle122')
+                .expect(404);
+        })
+    })
 })
