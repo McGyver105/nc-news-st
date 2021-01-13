@@ -75,10 +75,10 @@ describe('/api', () => {
                     )
                     expect(body.article).toEqual(
                         expect.objectContaining({
-                            comment_count: expect.any(Number)
+                            comment_count: expect.any(String)
                         })
                     )
-                    expect(body.article.comment_count).not.toBe(0);
+                    expect(body.article.comment_count).not.toBe('0');
                 })
         })
         it('GET 200 - returns an object with all the article information by id when there are no comments in the data', () => {
@@ -98,10 +98,10 @@ describe('/api', () => {
                     )
                     expect(body.article).toEqual(
                         expect.objectContaining({
-                            comment_count: expect.any(Number)
+                            comment_count: expect.any(String)
                         })
                     )
-                    expect(body.article.comment_count).toBe(0);
+                    expect(body.article.comment_count).toBe('0');
                 })
         })
         it('GET 404 - returns not found when the article id is valid but not present', () => {

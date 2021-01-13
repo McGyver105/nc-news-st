@@ -1,17 +1,14 @@
-const { selectArticleById, addCommentCount, insertNewVote } = require('../models/articles.model');
+const { selectArticleById, insertNewVote } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
     selectArticleById(article_id)
-        .then(rawArticle => {
-            if (rawArticle === undefined) {
+        .then(article => {
+            if (article === undefined) {
                 throw ({ status: 404, msg: 'article not found' });
             } else {
-                return addCommentCount(rawArticle, article_id);
+                res.status(200).send({ article });
             }
-        })
-        .then((article) => {
-            res.status(200).send({ article });
         })
         .catch(next);
 }
