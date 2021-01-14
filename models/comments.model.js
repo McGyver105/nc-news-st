@@ -1,4 +1,5 @@
 const connection = require('../db/connection');
+const articlesRouter = require('../routers/articles.router');
 
 const addNewComment = (article_id, newComment) => {
     return connection('comments')
@@ -9,4 +10,11 @@ const addNewComment = (article_id, newComment) => {
     })
 }
 
-module.exports = { addNewComment };
+const selectCommentsByArticleId = (article_id) => {
+    return connection
+        .select('comment_id', 'votes', 'created_at', 'author', 'body')
+        .from('comments')
+        .where({ article_id });
+}
+
+module.exports = { addNewComment, selectCommentsByArticleId };

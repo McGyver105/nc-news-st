@@ -215,7 +215,7 @@ describe('/api', () => {
                 });
         })
     })
-    describe('/:article_id/comments', () => {
+    describe('/articles/:article_id/comments', () => {
         it('POST 200 - returns the posted object with the comment only', () => {
             return request(app)
                 .post('/api/articles/3/comments')
@@ -275,6 +275,45 @@ describe('/api', () => {
                 .post('/api/articles/2/commet')
                 .send({ username: 'butter_bridge', body: 'a' })
                 .expect(500);
+        })
+        it('GET 200 - responds with an array of comments for the article id', () => {
+            return request(app)
+                .get('/api/articles/5/comments')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toHaveLength(2)
+                    expect(Array.isArray(body.comments))
+                    expect(body.comments[0]).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    )
+                })
+        })
+        it('GET 200 - responds with an empty array when the article exists but has no comments', () => {
+            return request(app)
+                .get('/api/articles/2/comments')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toHaveLength(0)
+                });
+        })
+        xit('GET 404 - responds with not found when the article id is valid but does not exist', () => {
+            return request(app)
+                .get('/api/articles/1000/comments')
+                .expect(404);
+        })
+        it('GET 400 - responds with bad request when the article id is invalid',() => {
+            return request(app)
+                .get('/api/articles/notvalid/comments')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('invalid input syntax for type');
+                });
         })
     })
 })
