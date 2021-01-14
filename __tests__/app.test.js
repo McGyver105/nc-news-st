@@ -193,13 +193,88 @@ describe('/api', () => {
                     expect(body.msg).toBe('invalid input syntax for type' )
                 })
         })
-        xdescribe('/:article_id/comments', () => {
-            it('POST 200 - returns the posted object with the comment only', () => {
-                return request(app)
-                    .post('/api/articles/1/comments')
-                    .send({ username: 'a', body: 'b' })
-                    .expect(200);
+        it('DELETE 204 - removes articles by id', () => {
+            return request(app)
+                .delete('/api/articles/1')
+                .expect(204);
+        })
+        it('DELETE 404 - responds not found when the id is not present', () => {
+            return request(app)
+                .delete('/api/articles/1000')
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('article not found');
+                })
+        })
+        it('DELETE 400 - responds bad request when the article id is invalid', () => {
+            return request(app)
+                .delete('/api/articles/notvalid')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('invalid input syntax for type');
+                });
+        })
+    })
+    describe('/:article_id/comments', () => {
+        it('POST 200 - returns the posted object with the comment only', () => {
+            return request(app)
+                .post('/api/articles/3/comments')
+                .send({ username: 'icellusedkars', body: 'b' })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.postedComment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            author: expect.any(String),
+                            article_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            body: expect.any(String),
+                    })
+                )
             })
+        })
+        it('POST 422 - responds unprocessable when the username does not exist', () => {
+            return request(app)
+                .post('/api/articles/1/comments')
+                .send({ username: 'a', body: 'b' })
+                .expect(422)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('input field does not exist');
+                });
+        })
+        it('POST 422 - responds unprocessable when the article id does not exist', () => {
+            return request(app)
+                .post('/api/articles/1000/comments')
+                .send({ username: 'butter_bridge', body: 'a' })
+                .expect(422)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('input field does not exist');
+                });
+        })
+        it('POST 400 - responds bad request when the body is empty', () => {
+            return request(app)
+                .post('/api/articles/2/comments')
+                .send({ username: 'butter_bridge' })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('field missing');
+                });
+        })
+        it('POST 400 - responds bad request when the username is empty', () => {
+            return request(app)
+                .post('/api/articles/2/comments')
+                .send({ body: 'a' })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('field missing');
+                });
+        })
+        it('POST 500 - responds with an internal server error when the path is spelt incorrectly', () => {
+            return request(app)
+                .post('/api/articles/2/commet')
+                .send({ username: 'butter_bridge', body: 'a' })
+                .expect(500);
         })
     })
 })

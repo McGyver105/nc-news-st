@@ -26,5 +26,10 @@ const insertNewVote = (newVote, article_id) => {
     })
 }
 
+const removeHouseById = (article_id) => {
+    return connection('articles')
+        .del()
+        .where({ article_id });
+}
 
-module.exports = { selectArticleById, insertNewVote };
+module.exports = { selectArticleById, insertNewVote, removeHouseById };

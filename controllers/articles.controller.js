@@ -1,4 +1,4 @@
-const { selectArticleById, insertNewVote } = require('../models/articles.model');
+const { selectArticleById, insertNewVote, removeHouseById } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
@@ -28,6 +28,16 @@ exports.patchArticleById = (req, res, next) => {
         })
         .then((updatedArticle) => {
             res.status(200).send({ updatedArticle });
+        })
+        .catch(next);
+}
+
+exports.deleteArticleById = (req, res, next) => {
+    const { article_id } = req.params;
+    removeHouseById(article_id)
+        .then((deleteCount) => {
+            if (deleteCount === 0) throw ({ status: 404, msg: 'article not found' });
+            else res.sendStatus(204);
         })
         .catch(next);
 }
