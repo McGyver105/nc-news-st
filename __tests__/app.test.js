@@ -130,14 +130,39 @@ describe('/api', () => {
                         expect(body.msg).toBe('input field invalid');
                     });
             })
-            xit('GET 200 - responds with an array of articles filtered by the author', () => {
+            it('GET 200 - responds with an array of articles filtered by the author', () => {
                 return request(app)
                     .get('/api/articles?author=rogersop')
                     .expect(200)
                     .then(({ body }) => {
-                    expect(body.articles).toHaveLength(2)
+                    expect(body.articles).toHaveLength(3)
                 })
             })
+            it('GET 404 - responds not found when the author has no articles or the author is invalid', () => {
+                return request(app)
+                    .get('/api/articles?author=invalid')
+                    .expect(404)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('no articles found');
+                    });
+            })
+            it('GET 200 - responds with an array filtered by the query topic', () => {
+                return request(app)
+                    .get('/api/articles?topic=cats')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(1);
+                    });
+            });
+            it('GET 400 - responds with not found when the topic is invalid or doesnt exist', () => {
+                return request(app)
+                    .get('/api/articles?topic=dogs')
+                    .expect(404)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('no articles found');
+                    });
+            })
+
         })
     })
     describe('/articles/:article_id', () => {

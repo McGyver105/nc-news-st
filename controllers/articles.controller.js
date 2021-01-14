@@ -46,9 +46,11 @@ exports.getAllArticles = (req, res, next) => {
     const { sorted_by } = req.query;
     const { order } = req.query;
     const { author } = req.query;
-    selectAllArticles(sorted_by, order, author)
+    const { topic } = req.query;
+    selectAllArticles(sorted_by, order, author, topic)
         .then(articles => {
-            res.status(200).send({ articles });
+            if (articles.length === 0) res.status(404).send({ msg: 'no articles found' });
+            else res.status(200).send({ articles });
         })
         .catch(next);
 }
