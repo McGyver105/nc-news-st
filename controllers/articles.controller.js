@@ -1,4 +1,4 @@
-const { selectArticleById, insertNewVote, removeHouseById } = require('../models/articles.model');
+const { selectArticleById, insertNewVote, removeHouseById, selectAllArticles } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
@@ -38,6 +38,17 @@ exports.deleteArticleById = (req, res, next) => {
         .then((deleteCount) => {
             if (deleteCount === 0) throw ({ status: 404, msg: 'article not found' });
             else res.sendStatus(204);
+        })
+        .catch(next);
+}
+
+exports.getAllArticles = (req, res, next) => {
+    const { sorted_by } = req.query;
+    const { order } = req.query;
+    const { author } = req.query;
+    selectAllArticles(sorted_by, order, author)
+        .then(articles => {
+            res.status(200).send({ articles });
         })
         .catch(next);
 }
