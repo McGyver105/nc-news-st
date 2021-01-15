@@ -49,4 +49,14 @@ const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, top
         })
 }
 
-module.exports = { selectArticleById, insertNewVote, removeHouseById, selectAllArticles };
+const insertNewArticle = (articleInfo) => {
+    return connection
+        .insert(articleInfo)
+        .into('articles')
+        .returning('*')
+        .then(([createdArticle]) => {
+            return createdArticle;
+        });
+}
+
+module.exports = { selectArticleById, insertNewVote, removeHouseById, selectAllArticles, insertNewArticle };

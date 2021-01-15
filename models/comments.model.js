@@ -36,7 +36,13 @@ const patchCommentVotesById = (comment_id, inc_votes = 0) => {
         .then(comment => comment[0]);
 }
 
+const deleteCommentById = (comment_id) => {
+    return connection('comments')
+        .del()
+        .where({ comment_id });
+}
 
-module.exports = { addNewComment, selectCommentsByArticleId, patchCommentVotesById };
+
+module.exports = { addNewComment, selectCommentsByArticleId, patchCommentVotesById, deleteCommentById };
 
 

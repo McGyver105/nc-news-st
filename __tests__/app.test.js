@@ -33,7 +33,7 @@ describe('/api', () => {
             })
         })
     })
-    describe('/users', () => {
+    describe('/users/:username', () => {
         describe('GET requests', () => {
             it('GET - 200 - responds with a user object for that id', () => {
                 return request(app)
@@ -162,7 +162,48 @@ describe('/api', () => {
                         expect(body.msg).toBe('no articles found');
                     });
             })
-
+        })
+        describe('POST requests', () => {
+            it('POST 200 - adds a new article to the database and returns an object on a key of created article', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .send({
+                        title: 'new title',
+                        body: 'some text',
+                        topic: 'mitch',
+                        author: 'rogersop',
+                    })
+                    .expect(201)
+                    .then(({ body }) => {
+                        expect(typeof body.createdArticle).toBe('object')
+                        expect(Array.isArray(body.createdArticle)).toBe(false)
+                        expect(body.createdArticle).toEqual(
+                            expect.objectContaining({
+                                article_id: expect.any(Number),
+                                title: expect.any(String),
+                                body: expect.any(String),
+                                votes: expect.any(Number),
+                                topic: expect.any(String),
+                                author: expect.any(String),
+                                created_at: expect.any(String)
+                            })
+                        )
+                })
+            });
+            it('POST 422 - responds with unprocessable when the title is not a string or number', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .send({
+                        title: null,
+                        body: 'some text',
+                        topic: 'mitch',
+                        author: 'rogersop',
+                    })
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('field missing');
+                    });
+            });
         })
     })
     describe('/articles/:article_id', () => {
@@ -368,20 +409,20 @@ describe('/api', () => {
                         expect(body.msg).toBe('input field does not exist');
                     });
             })
-            it('POST 400 - responds bad request when the body is empty', () => {
+            it('POST 422 - responds bad request when the body is empty', () => {
                 return request(app)
                     .post('/api/articles/2/comments')
                     .send({ username: 'butter_bridge' })
-                    .expect(400)
+                    .expect(422)
                     .then(({ body }) => {
                         expect(body.msg).toBe('field missing');
                     });
             })
-            it('POST 400 - responds bad request when the username is empty', () => {
+            it('POST 422 - responds bad request when the username is empty', () => {
                 return request(app)
                     .post('/api/articles/2/comments')
                     .send({ body: 'a' })
-                    .expect(400)
+                    .expect(422)
                     .then(({ body }) => {
                         expect(body.msg).toBe('field missing');
                     });
@@ -565,6 +606,29 @@ describe('/api', () => {
                 return request(app)
                     .patch('/api/comments/1')
                     .send({ inc_votes: false })
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('invalid input syntax for type');
+                    });
+            })
+        })
+        describe('DELETE requests', () => {
+            it('DELETE 204 - responds with no content when a comment is deleted', () => {
+                return request(app)
+                    .delete('/api/comments/2')
+                    .expect(204);
+            });
+            it('DELETE 404 - responds not found when the comment id is valid but no comment exists', () => {
+                return request(app)
+                    .delete('/api/comments/10000')
+                    .expect(404)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('comment not found');
+                    });
+            })
+            it('DELETE 400 - responds bad request when the comment id is invalid', () => {
+                return request(app)
+                    .delete('/api/comments/invalid')
                     .expect(400)
                     .then(({ body }) => {
                         expect(body.msg).toBe('invalid input syntax for type');

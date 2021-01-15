@@ -1,4 +1,9 @@
-const { selectArticleById, insertNewVote, removeHouseById, selectAllArticles } = require('../models/articles.model');
+const { selectArticleById,
+    insertNewVote,
+    removeHouseById,
+    selectAllArticles,
+    insertNewArticle
+        } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
@@ -51,6 +56,15 @@ exports.getAllArticles = (req, res, next) => {
         .then(articles => {
             if (articles.length === 0) res.status(404).send({ msg: 'no articles found' });
             else res.status(200).send({ articles });
+        })
+        .catch(next);
+}
+
+exports.postNewArticle = (req, res, next) => {
+    const articleInfo = req.body;
+    insertNewArticle(articleInfo)
+        .then((createdArticle) => {
+            res.status(201).send({ createdArticle });
         })
         .catch(next);
 }

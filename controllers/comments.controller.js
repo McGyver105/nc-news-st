@@ -1,4 +1,4 @@
-const { addNewComment, selectCommentsByArticleId, patchCommentVotesById } = require('../models/comments.model');
+const { addNewComment, selectCommentsByArticleId, patchCommentVotesById, deleteCommentById } = require('../models/comments.model');
 
 exports.postComment = (req, res, next) => {
     const { article_id } = req.params;
@@ -29,6 +29,16 @@ exports.updateCommentVotes = (req, res, next) => {
         .then((updatedComment) => {
             if (updatedComment === undefined) throw ({ status: 404, msg: 'comment not found' });
             res.status(200).send({ updatedComment });
+        })
+        .catch(next);
+}
+
+exports.removeCommentById = (req, res, next) => {
+    const { comment_id } = req.params;
+    deleteCommentById(comment_id)
+        .then((deleteCount) => {
+            if (deleteCount === 0) throw ({ status: 404, msg: 'comment not found' });
+            else res.sendStatus(204);
         })
         .catch(next);
 }
