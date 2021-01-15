@@ -10,3 +10,11 @@ exports.handleSQLErrors = (err, req, res, next) => {
     if (err.code === '42703') res.status(400).send({ msg: 'input field does not exist' });
     else next(err);
 }
+
+exports.handleIncorrectPaths = (req, res, next) => {
+    res.sendStatus(500);
+}
+
+exports.catchRemainingErrors = (err, req, res, next) => {
+    res.sendStatus(500);
+};

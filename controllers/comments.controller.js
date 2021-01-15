@@ -24,11 +24,11 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.updateCommentVotes = (req, res, next) => {
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
-    if (inc_votes === undefined) throw ({ code: '22P02'})
+    if (inc_votes === undefined) throw ({ status: 400, msg: 'invalid input syntax for type'})
     patchCommentVotesById(comment_id, inc_votes)
-        .then((updatedComment) => {
-            if (updatedComment === undefined) throw ({ status: 404, msg: 'comment not found' });
-            res.status(200).send({ updatedComment });
+        .then((comment) => {
+            if (comment === undefined) throw ({ status: 404, msg: 'comment not found' });
+            res.status(200).send({ comment });
         })
         .catch(next);
 }

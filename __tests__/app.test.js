@@ -596,8 +596,8 @@ describe('/api', () => {
                     .send({ inc_votes: 20 })
                     .expect(200)
                     .then(({ body }) => {
-                        expect(body.updatedComment.votes).toBe(36);
-                        expect(body.updatedComment).toEqual(
+                        expect(body.comment.votes).toBe(36);
+                        expect(body.comment).toEqual(
                             expect.objectContaining({
                                 comment_id: expect.any(Number),
                                 author: expect.any(String),
@@ -615,8 +615,8 @@ describe('/api', () => {
                     .send({ inc_votes: 0 })
                     .expect(200)
                     .then(({ body }) => {
-                        expect(body.updatedComment.votes).toBe(16);
-                        expect(body.updatedComment).toEqual(
+                        expect(body.comment.votes).toBe(16);
+                        expect(body.comment).toEqual(
                             expect.objectContaining({
                                 comment_id: expect.any(Number),
                                 author: expect.any(String),
