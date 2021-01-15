@@ -204,6 +204,67 @@ describe('/api', () => {
                         expect(body.msg).toBe('field missing');
                     });
             });
+            it('POST 422 - responds with unprocessable when the body is not a string or number', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .send({
+                        title: 'the title',
+                        body: null,
+                        topic: 'mitch',
+                        author: 'rogersop',
+                    })
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('field missing');
+                    });
+            });
+            it('POST 422 - responds with unprocessable when the topic is invalid', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .send({
+                        title: null,
+                        body: 'some text',
+                        topic: 'invalid topic',
+                        author: 'rogersop',
+                    })
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('field missing');
+                    });
+            });
+            it('POST 422 - responds with unprocessable when the author is invalid', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .send({
+                        title: null,
+                        body: 'some text',
+                        topic: 'mitch',
+                        author: 'rogersop',
+                    })
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('field missing');
+                    });
+            });
+            it('POST 422 - responds with unprocessable when there is no body attached', () => {
+                return request(app)
+                    .post('/api/articles')
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('field missing');
+                    });
+            });
+            it('POST 500 - responds with server error when an article id is included', () => {
+                return request(app)
+                    .post('/api/articles/1')
+                    .send({
+                        title: null,
+                        body: 'some text',
+                        topic: 'mitch',
+                        author: 'rogersop',
+                    })
+                    .expect(500)
+            });
         })
     })
     describe('/articles/:article_id', () => {
