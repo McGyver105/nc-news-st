@@ -488,7 +488,7 @@ describe('/api', () => {
     })
     describe('/comments/:comment_id', () => {
         describe('PATCH requests', () => {
-            it('PATCH - 200 - updates the votes count on a comment', () => {
+            it('PATCH 200 - updates the votes count on a comment', () => {
                 return request(app)
                     .patch('/api/comments/1')
                     .send({ inc_votes: 20 })
@@ -526,7 +526,7 @@ describe('/api', () => {
                         );
                     });
             })
-            it('PATCH 404 - responds now found when the article id is valid but does not exist', () => {
+            it('PATCH 404 - responds not found when the comment id is valid but does not exist', () => {
                 return request(app)
                     .patch('/api/comments/10000')
                     .send({ inc_votes: 10 })
@@ -561,11 +561,14 @@ describe('/api', () => {
                         expect(body.msg).toBe('invalid input syntax for type');
                     });
             });
-            // in progress
-            xit('PATCH 400 - does not change the vote count when the value is empty', () => {
+            it('PATCH 400 - responds bad request when the value is falsy', () => {
                 return request(app)
                     .patch('/api/comments/1')
-                .send({inc_votes})
+                    .send({ inc_votes: false })
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('invalid input syntax for type');
+                    });
             })
         })
     })

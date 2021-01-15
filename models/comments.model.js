@@ -28,7 +28,7 @@ const selectCommentsByArticleId = (article_id, sorted_by = 'created_at', order =
 */
 }
 
-const patchCommentVotesById = (comment_id, inc_votes) => {
+const patchCommentVotesById = (comment_id, inc_votes = 0) => {
     return connection('comments')
         .increment('votes', inc_votes)
         .where({ comment_id })
