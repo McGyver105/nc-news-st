@@ -4,10 +4,13 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handleSQLErrors = (err, req, res, next) => {
-    if (err.code === '22P02') res.status(400).send({ msg: 'invalid input syntax for type' });
-    if (err.code === '23503') res.status(422).send({ msg: 'input field does not exist' });
-    if (err.code === '23502') res.status(422).send({ msg: 'field missing' });
-    if (err.code === '42703') res.status(400).send({ msg: 'input field does not exist' });
+    const errorLookup = {
+        '22P02': { status: 400, msg: 'invalid input syntax for type' },
+        '23503': { status: 422, msg: 'input field does not exist' },
+        '23502': { status: 422, msg: 'field missing' },
+        '42703': { status: 400, msg: 'input field does not exist' }
+    };
+    if (err.code) res.status(errorLookup[err.code].status).send({msg: errorLookup[err.code].msg});
     else next(err);
 }
 
