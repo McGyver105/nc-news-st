@@ -486,6 +486,89 @@ describe('/api', () => {
             })
         })
     })
+    describe('/comments/:comment_id', () => {
+        describe('PATCH requests', () => {
+            it('PATCH - 200 - updates the votes count on a comment', () => {
+                return request(app)
+                    .patch('/api/comments/1')
+                    .send({ inc_votes: 20 })
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.updatedComment.votes).toBe(36);
+                        expect(body.updatedComment).toEqual(
+                            expect.objectContaining({
+                                comment_id: expect.any(Number),
+                                author: expect.any(String),
+                                article_id: expect.any(Number),
+                                votes: expect.any(Number),
+                                created_at: expect.any(String),
+                                body: expect.any(String)
+                            })
+                        );
+                    });
+            });
+            it('PATCH 200 - does not change the votes when the vote increment is zero', () => {
+                return request(app)
+                    .patch('/api/comments/1')
+                    .send({ inc_votes: 0 })
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.updatedComment.votes).toBe(16);
+                        expect(body.updatedComment).toEqual(
+                            expect.objectContaining({
+                                comment_id: expect.any(Number),
+                                author: expect.any(String),
+                                article_id: expect.any(Number),
+                                votes: expect.any(Number),
+                                created_at: expect.any(String),
+                                body: expect.any(String)
+                            })
+                        );
+                    });
+            })
+            it('PATCH 404 - responds now found when the article id is valid but does not exist', () => {
+                return request(app)
+                    .patch('/api/comments/10000')
+                    .send({ inc_votes: 10 })
+                    .expect(404)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('comment not found');
+                    });
+            });
+            it('PATCH 400 - responds bad request when the article id is invalid', () => {
+                return request(app)
+                    .patch('/api/comments/invalid')
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('invalid input syntax for type');
+                    });
+            });
+            it('PATCH 400 - responds bad request when the sent body has an invalid value', () => {
+                return request(app)
+                    .patch('/api/comments/1')
+                    .send({ inc_votes: 'invalid' })
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('invalid input syntax for type');
+                    });
+            });
+            it('PATCH 400 - responds bad request when the sent body has an invalid key', () => {
+                return request(app)
+                    .patch('/api/comments/1')
+                    .send({ cni_toves: 20 })
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('invalid input syntax for type');
+                    });
+            });
+            // in progress
+            xit('PATCH 400 - does not change the vote count when the value is empty', () => {
+                return request(app)
+                    .patch('/api/comments/1')
+                .send({inc_votes})
+            })
+        })
+    })
 })
 
 

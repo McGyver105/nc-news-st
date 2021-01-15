@@ -28,16 +28,15 @@ const selectCommentsByArticleId = (article_id, sorted_by = 'created_at', order =
 */
 }
 
-module.exports = { addNewComment, selectCommentsByArticleId };
+const patchCommentVotesById = (comment_id, inc_votes) => {
+    return connection('comments')
+        .increment('votes', inc_votes)
+        .where({ comment_id })
+        .returning('*')
+        .then(comment => comment[0]);
+}
 
 
-/*
-an articles array of article objects, each of which should have the following properties:
-author which is the username from the users table
-title
-article_id
-topic
-created_at
-votes
-comment_count which is the total count of all the comments with this article_id - you should make use of knex queries in order to achieve this
-*/
+module.exports = { addNewComment, selectCommentsByArticleId, patchCommentVotesById };
+
+

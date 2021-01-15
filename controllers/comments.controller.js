@@ -1,4 +1,4 @@
-const { addNewComment, selectCommentsByArticleId } = require('../models/comments.model');
+const { addNewComment, selectCommentsByArticleId, patchCommentVotesById } = require('../models/comments.model');
 
 exports.postComment = (req, res, next) => {
     const { article_id } = req.params;
@@ -17,6 +17,18 @@ exports.getCommentsByArticleId = (req, res, next) => {
     selectCommentsByArticleId(article_id, sorted_by, order)
         .then((comments) => {
             res.status(200).send({comments})
+        })
+        .catch(next);
+}
+
+exports.updateCommentVotes = (req, res, next) => {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    if (inc_votes === undefined) throw ({ code: '22P02'})
+    patchCommentVotesById(comment_id, inc_votes)
+        .then((updatedComment) => {
+            if (updatedComment === undefined) throw ({ status: 404, msg: 'comment not found' });
+            res.status(200).send({ updatedComment });
         })
         .catch(next);
 }
