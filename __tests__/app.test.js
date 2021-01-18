@@ -175,9 +175,9 @@ describe('/api', () => {
                     })
                     .expect(201)
                     .then(({ body }) => {
-                        expect(typeof body.createdArticle).toBe('object')
-                        expect(Array.isArray(body.createdArticle)).toBe(false)
-                        expect(body.createdArticle).toEqual(
+                        expect(typeof body.article).toBe('object')
+                        expect(Array.isArray(body.article)).toBe(false)
+                        expect(body.article).toEqual(
                             expect.objectContaining({
                                 article_id: expect.any(Number),
                                 title: expect.any(String),
@@ -340,7 +340,7 @@ describe('/api', () => {
                     .send({ inc_votes: 100 })
                     .expect(200)
                     .then(({body}) => {
-                        expect(body.updatedArticle).toEqual(
+                        expect(body.article).toEqual(
                             expect.objectContaining({
                                 article_id: expect.any(Number),
                                 title: expect.any(String),
@@ -351,7 +351,7 @@ describe('/api', () => {
                                 created_at: expect.any(String)
                             })
                         )
-                        expect(body.updatedArticle.votes).toBe(200)
+                        expect(body.article.votes).toBe(200)
                 })
             })
             it('PATCH 200 - responds with an object containing the updated article (article 2))', () => {
@@ -360,7 +360,7 @@ describe('/api', () => {
                     .send({ inc_votes: 100 })
                     .expect(200)
                     .then(({body}) => {
-                        expect(body.updatedArticle).toEqual(
+                        expect(body.article).toEqual(
                             expect.objectContaining({
                                 article_id: expect.any(Number),
                                 title: expect.any(String),
@@ -371,7 +371,7 @@ describe('/api', () => {
                                 created_at: expect.any(String)
                             })
                         )
-                        expect(body.updatedArticle.votes).toBe(100)
+                        expect(body.article.votes).toBe(100)
                 })
             })
             it('PATCH 400 - responds with bad request when the vote change is not a number', () => {

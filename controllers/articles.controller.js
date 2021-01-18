@@ -18,8 +18,8 @@ exports.patchArticleById = (req, res, next) => {
     const { article_id } = req.params;
     const { inc_votes } = req.body;
     incVoteById(article_id, inc_votes)
-        .then((updatedArticle) => {
-            res.status(200).send({ updatedArticle });
+        .then((article) => {
+            res.status(200).send({ article });
         })
         .catch(next);
 }
@@ -48,8 +48,8 @@ exports.getAllArticles = (req, res, next) => {
 exports.postNewArticle = (req, res, next) => {
     const articleInfo = req.body;
     insertNewArticle(articleInfo)
-        .then((createdArticle) => {
-            res.status(201).send({ createdArticle });
+        .then((article) => {
+            res.status(201).send({ article });
         })
         .catch(next);
 }
