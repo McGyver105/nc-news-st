@@ -9,7 +9,10 @@ const selectArticleById = (article_id) => {
         .where('articles.article_id', '=', article_id)
         .groupBy('articles.article_id')
         .then(([article]) => {
-            return article;
+            if (article === undefined) {
+                throw ({ status: 404, msg: 'article not found' });
+            }
+            else return article;
         })
 }
 
@@ -29,7 +32,10 @@ const insertNewVote = (newVote, article_id) => {
 const removeHouseById = (article_id) => {
     return connection('articles')
         .del()
-        .where({ article_id });
+        .where({ article_id })
+        .then(deleteCount => {
+            if (deleteCount === 0) throw ({ status: 404, msg: 'article not found' });
+        });
 }
 
 const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, topic) => {
@@ -47,6 +53,10 @@ const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, top
         .modify(query => {
             if (topic) query.where('articles.topic', topic);
         })
+        .then(articles => {
+            if (articles.length === 0) throw ({ status: 404, msg: 'no articles found' });
+            else return articles;
+    })
 }
 
 const insertNewArticle = (articleInfo) => {
@@ -66,7 +76,10 @@ const incVoteById = (article_id, inc_votes) => {
         .where({article_id})
         .returning('*')
         .then(([article]) => {
-            return article;
+            if (article === undefined) {
+                throw ({ status: 404, msg: 'article not found' })
+            }
+            else return article;
         })
 }
 

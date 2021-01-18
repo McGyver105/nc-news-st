@@ -9,11 +9,7 @@ exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
     selectArticleById(article_id)
         .then(article => {
-            if (article === undefined) {
-                throw ({ status: 404, msg: 'article not found' });
-            } else {
                 res.status(200).send({ article });
-            }
         })
         .catch(next);
 }
@@ -22,13 +18,6 @@ exports.patchArticleById = (req, res, next) => {
     const { article_id } = req.params;
     const { inc_votes } = req.body;
     incVoteById(article_id, inc_votes)
-        .then(article => {
-            if (article === undefined) {
-                throw ({ status: 404, msg: 'article not found' })
-            } else {
-                return article
-            }
-        })
         .then((updatedArticle) => {
             res.status(200).send({ updatedArticle });
         })
@@ -38,9 +27,8 @@ exports.patchArticleById = (req, res, next) => {
 exports.deleteArticleById = (req, res, next) => {
     const { article_id } = req.params;
     removeHouseById(article_id)
-        .then((deleteCount) => {
-            if (deleteCount === 0) throw ({ status: 404, msg: 'article not found' });
-            else res.sendStatus(204);
+        .then(() => {
+            res.sendStatus(204);
         })
         .catch(next);
 }
@@ -52,8 +40,7 @@ exports.getAllArticles = (req, res, next) => {
     const { topic } = req.query;
     selectAllArticles(sorted_by, order, author, topic)
         .then(articles => {
-            if (articles.length === 0) res.status(404).send({ msg: 'no articles found' });
-            else res.status(200).send({ articles });
+            res.status(200).send({ articles });
         })
         .catch(next);
 }

@@ -527,7 +527,7 @@ describe('/api', () => {
                     .get('/api/articles/1000/comments')
                     .expect(404)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('article does not exist')
+                        expect(body.msg).toBe('article not found')
                     })
             })
             it('GET 400 - responds with bad request when the article id is invalid', () => {
