@@ -59,4 +59,15 @@ const insertNewArticle = (articleInfo) => {
         });
 }
 
-module.exports = { selectArticleById, insertNewVote, removeHouseById, selectAllArticles, insertNewArticle };
+const incVoteById = (article_id, inc_votes) => {
+    if (inc_votes === undefined) throw ({status: 400, msg: 'invalid input syntax for type'})
+    else return connection('articles')
+        .increment('votes', inc_votes)
+        .where({article_id})
+        .returning('*')
+        .then(([article]) => {
+            return article;
+        })
+}
+
+module.exports = { selectArticleById, insertNewVote, removeHouseById, selectAllArticles, insertNewArticle, incVoteById };

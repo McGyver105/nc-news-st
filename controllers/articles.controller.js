@@ -1,8 +1,8 @@
 const { selectArticleById,
-    insertNewVote,
     removeHouseById,
     selectAllArticles,
-    insertNewArticle
+    insertNewArticle,
+    incVoteById
         } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
@@ -21,14 +21,12 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticleById = (req, res, next) => {
     const { article_id } = req.params;
     const { inc_votes } = req.body;
-    selectArticleById(article_id)
+    incVoteById(article_id, inc_votes)
         .then(article => {
             if (article === undefined) {
                 throw ({ status: 404, msg: 'article not found' })
             } else {
-                const { votes } = article;
-                const newVote = votes + inc_votes;
-                return insertNewVote(newVote, article_id);
+                return article
             }
         })
         .then((updatedArticle) => {

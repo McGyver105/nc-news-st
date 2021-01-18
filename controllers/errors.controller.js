@@ -19,5 +19,6 @@ exports.handleIncorrectPaths = (req, res, next) => {
 }
 
 exports.catchRemainingErrors = (err, req, res, next) => {
+    console.log(err)
     res.sendStatus(500);
 };
