@@ -16,7 +16,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
     const { order } = req.query;
     selectCommentsByArticleId(article_id, sorted_by, order)
         .then((comments) => {
-            res.status(200).send({comments})
+            res.status(200).send({ comments });
         })
         .catch(next);
 }
@@ -24,10 +24,8 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.updateCommentVotes = (req, res, next) => {
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
-    if (inc_votes === undefined) throw ({ status: 400, msg: 'invalid input syntax for type'})
     patchCommentVotesById(comment_id, inc_votes)
         .then((comment) => {
-            if (comment === undefined) throw ({ status: 404, msg: 'comment not found' });
             res.status(200).send({ comment });
         })
         .catch(next);
@@ -36,9 +34,8 @@ exports.updateCommentVotes = (req, res, next) => {
 exports.removeCommentById = (req, res, next) => {
     const { comment_id } = req.params;
     deleteCommentById(comment_id)
-        .then((deleteCount) => {
-            if (deleteCount === 0) throw ({ status: 404, msg: 'comment not found' });
-            else res.sendStatus(204);
+        .then(() => {
+            res.sendStatus(204);
         })
         .catch(next);
 }

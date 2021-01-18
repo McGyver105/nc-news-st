@@ -28,18 +28,27 @@ const selectCommentsByArticleId = (article_id, sorted_by = 'created_at', order =
 */
 }
 
-const patchCommentVotesById = (comment_id, inc_votes = 0) => {
+const patchCommentVotesById = (comment_id, inc_votes) => {
+    if (inc_votes === undefined) {
+        throw ({ status: 400, msg: 'invalid input syntax for type' });
+    }
     return connection('comments')
         .increment('votes', inc_votes)
         .where({ comment_id })
         .returning('*')
-        .then(comment => comment[0]);
+        .then(comment => {
+            if (comment[0] === undefined) throw ({ status: 404, msg: 'comment not found' });
+            else return comment[0];
+        });
 }
 
 const deleteCommentById = (comment_id) => {
     return connection('comments')
         .del()
-        .where({ comment_id });
+        .where({ comment_id })
+        .then(deleteCount => {
+            if (deleteCount === 0) throw ({ status: 404, msg: 'comment not found' });
+        });
 }
 
 
