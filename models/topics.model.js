@@ -4,4 +4,4 @@ const selectAllTopics = () => {
     return connection.select('*').from('topics');
 }
 
-module.exports = selectAllTopics;
+module.exports = { selectAllTopics };

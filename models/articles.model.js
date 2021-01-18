@@ -53,8 +53,21 @@ const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, top
         .modify(query => {
             if (topic) query.where('articles.topic', topic);
         })
-        .then(articles => {
-            if (articles.length === 0) throw ({ status: 404, msg: 'no articles found' });
+        .then(articlesRows => {
+            if (author) {
+                const invalidAuthor = checkAuthorInvalid(author);
+                return Promise.all([articlesRows, invalidAuthor])
+            } else {
+                if (topic) {
+                    const invalidTopic = checkTopicInvalid(topic);
+                    return Promise.all([articlesRows, invalidTopic])
+                } else {
+                    return [articlesRows]
+                }
+            }
+        })
+        .then(([articles, invalidSearch]) => {
+            if (invalidSearch) throw ({status: 400, msg: 'invalid search term'})
             else return articles;
     })
 }
@@ -81,6 +94,28 @@ const incVoteById = (article_id, inc_votes) => {
             }
             else return article;
         })
+}
+
+const checkAuthorInvalid = (author) => {
+    return connection
+        .select('*')
+        .from('users')
+        .where('username', '=', author)
+        .then(userRows => {
+            if (userRows.length === 0) return true;
+            else return false;
+        });
+}
+
+const checkTopicInvalid = (topic) => {
+    return connection
+        .select('*')
+        .from('topics')
+        .where('slug', '=', topic)
+        .then(userRows => {
+            if (userRows.length === 0) return true;
+            else return false;
+        });
 }
 
 module.exports = { selectArticleById, insertNewVote, removeHouseById, selectAllArticles, insertNewArticle, incVoteById };

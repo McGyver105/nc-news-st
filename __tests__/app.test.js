@@ -26,11 +26,28 @@ describe('/api', () => {
                     )
                 })
             })
-            it('GET - 500 Gives error message for the wrong path', () => {
+            it('GET - 405 Gives error message for the wrong path', () => {
                 return request(app)
                     .get('/api/toics')
-                    .expect(500);
+                    .expect(405);
             })
+        })
+        describe('Invalid requests', () => {
+            it('POST - 405 returns method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/topics')
+                    .expect(405)
+            });
+            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/topics')
+                    .expect(405)
+            });
+            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/topics')
+                    .expect(405)
+            });
         })
     })
     describe('/users/:username', () => {
@@ -60,6 +77,23 @@ describe('/api', () => {
                     .expect(400);
             })
         })
+        describe('Invalid requests', () => {
+            it('POST - 405 returns method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/users/rogersop')
+                    .expect(405)
+            });
+            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/users/rogersop')
+                    .expect(405)
+            });
+            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/users/rogersop')
+                    .expect(405)
+            });
+        })
     })
     describe('/articles', () => {
         describe('GET requests', () => {
@@ -82,6 +116,14 @@ describe('/api', () => {
                         )
                 })
             })
+            it('GET 200 - responds with an array of articles in descending order by default', () => {
+                return request(app)
+                    .get('/api/articles?sorted_by=votes')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toBeSorted({ descending: true });
+                    });
+            })
             it('GET 200 - responds with an array of articles sorted by date by default', () => {
                 return request(app)
                     .get('/api/articles')
@@ -103,18 +145,10 @@ describe('/api', () => {
                     .get('/api/articles?sorted_by=invalid')
                     .expect(400)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('input field does not exist');
+                        expect(body.msg).toBe('input field invalid');
                     });
             });
-            it('GET 200 - responds with an array of articles in descending order by default', () => {
-                return request(app)
-                    .get('/api/articles?sorted_by=votes')
-                    .expect(200)
-                    .then(({ body }) => {
-                        expect(body.articles).toBeSorted({ descending: true });
-                    });
-            })
-            it('GET 200 - responds with an array of articles in ascending order', () => {
+            it('GET 200 - responds with an array of articles in ascending order when specified', () => {
                 return request(app)
                     .get('/api/articles?order=asc')
                     .expect(200)
@@ -138,12 +172,20 @@ describe('/api', () => {
                     expect(body.articles).toHaveLength(3)
                 })
             })
-            it('GET 404 - responds not found when the author has no articles or the author is invalid', () => {
+            it('GET 200 - responds with an empty array when the author is valid but has no articles', () => {
+                return request(app)
+                    .get('/api/articles?author=lurker')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(0);
+                    });
+            })
+            it('GET 400 - responds not found when the author is invalid', () => {
                 return request(app)
                     .get('/api/articles?author=invalid')
-                    .expect(404)
+                    .expect(400)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('no articles found');
+                        expect(body.msg).toBe('invalid search term');
                     });
             })
             it('GET 200 - responds with an array filtered by the query topic', () => {
@@ -154,12 +196,12 @@ describe('/api', () => {
                         expect(body.articles).toHaveLength(1);
                     });
             });
-            it('GET 400 - responds with not found when the topic is invalid or doesnt exist', () => {
+            it('GET 404 - responds with not found when the topic is invalid or doesnt exist', () => {
                 return request(app)
                     .get('/api/articles?topic=dogs')
-                    .expect(404)
+                    .expect(400)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('no articles found');
+                        expect(body.msg).toBe('invalid search term');
                     });
             })
         })
@@ -254,7 +296,7 @@ describe('/api', () => {
                         expect(body.msg).toBe('field missing');
                     });
             });
-            it('POST 500 - responds with server error when an article id is included', () => {
+            it('POST 405 - responds with server error when an article id is included', () => {
                 return request(app)
                     .post('/api/articles/1')
                     .send({
@@ -263,7 +305,19 @@ describe('/api', () => {
                         topic: 'mitch',
                         author: 'rogersop',
                     })
-                    .expect(500)
+                    .expect(405)
+            });
+        })
+        describe('Invalid requests', () => {
+            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/articles')
+                    .expect(405)
+            });
+            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/articles')
+                    .expect(405)
             });
         })
     })
@@ -431,6 +485,13 @@ describe('/api', () => {
                     });
             })
         })
+        describe('Invalid requests', () => {
+            it('POST - 405 returns method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/articles/1')
+                    .expect(405)
+            });
+        })
     })
     describe('/articles/:article_id/comments', () => {
         describe('POST requests', () => {
@@ -488,11 +549,11 @@ describe('/api', () => {
                         expect(body.msg).toBe('field missing');
                     });
             })
-            it('POST 500 - responds with an internal server error when the path is spelt incorrectly', () => {
+            it('POST 405 - responds with an internal server error when the path is spelt incorrectly', () => {
                 return request(app)
                     .post('/api/articles/2/commet')
                     .send({ username: 'butter_bridge', body: 'a' })
-                    .expect(500);
+                    .expect(405);
             })
         })
         describe('GET requests', () => {
@@ -559,7 +620,7 @@ describe('/api', () => {
                     .get('/api/articles/1/comments?sorted_by=language')
                     .expect(400)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('input field does not exist');
+                        expect(body.msg).toBe('input field invalid');
                     });
             })
             it('GET 200 - responds with an array of comments sorted descending by default', () => {
@@ -586,6 +647,18 @@ describe('/api', () => {
                         expect(body.msg).toBe('invalid order');
                     });
             })
+        })
+        describe('Invalid requests', () => {
+            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/articles/5/comments')
+                    .expect(405)
+            });
+            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/articles/5/comments')
+                    .expect(405)
+            });
         })
     })
     describe('/comments/:comment_id', () => {
@@ -695,6 +768,18 @@ describe('/api', () => {
                         expect(body.msg).toBe('invalid input syntax for type');
                     });
             })
+        })
+        describe('Invalid requests', () => {
+            it('GET - 405 returns method not allowed to all get requests', () => {
+                return request(app)
+                    .get('/api/comments/1')
+                    .expect(405)
+            });
+            it('POST - 405 returns method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/comments/1')
+                    .expect(405)
+            });
         })
     })
 })
