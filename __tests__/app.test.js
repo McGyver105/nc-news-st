@@ -11,6 +11,35 @@ beforeEach(() => {
 });
 
 describe('/api', () => {
+    describe('/', () => {
+        describe('GET requests', () => {
+            it('GET 200 - returns a welcome message when on the homepage', () => {
+                return request(app)
+                    .get('/api/')
+                    .expect(200)
+                    .then(({ body }) => {
+                    expect(body.msg).toBe('welcome to the nc-news-st homepage, please see the documentation for further requests')
+                })
+            })
+        })
+        describe('Invalid requests', () => {
+            it('POST - 405 returns method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/')
+                    .expect(405)
+            });
+            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/')
+                    .expect(405)
+            });
+            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/')
+                    .expect(405)
+            });
+        })
+    })
     describe('/topics', () => {
         describe('GET requests', () => {
             it('GET - 200 Returns an array of topic objects', () => {
