@@ -18,7 +18,7 @@ describe('/api', () => {
                     .get('/api/')
                     .expect(200)
                     .then(({ body }) => {
-                    expect(body.msg).toBe('welcome to the nc-news-st homepage, please see the documentation for further requests')
+                    expect(body.msg).toBe('welcome to the nc-news-st homepage. please see the documentation for further requests')
                 })
             })
         })

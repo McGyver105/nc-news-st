@@ -49,8 +49,6 @@ const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, top
         .orderBy(sorted_by, order)
         .modify(query => {
             if (author) query.where('articles.author', author);
-        })
-        .modify(query => {
             if (topic) query.where('articles.topic', topic);
         })
         .then(articlesRows => {
