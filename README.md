@@ -1,6 +1,6 @@
 # Northcoders News API
 
-This repository was originally created by Northcoders as an exercise in building a backend api server in preparation for the frontend work soon to commence. The initial setting up of the express server, sql database, and data migrations was carried out alongside Nate Masters - another trainee on my course.
+This repository was originally created by myself based on instructions and guidance from Northcoders as an exercise in building a backend api server in preparation for the frontend work soon to commence. The initial setting up of the express server, sql database, and data migrations was carried out alongside Nate Masters - another trainee on my course.
 
 Once the Express server was setup, the end points and testing was conducted by myself before being push up and hosted on heroku.
 
@@ -8,7 +8,7 @@ https://nc-news-project-st.herokuapp.com/api/
 
 Feel free to visit the hosted app - the link above will return a json object containing descriptions of all the current endpoints setup.
 
-Below are the original instructions from the Northcoders tutors that were used to carry out the task and setup the server.
+Below are the original instructions from the Northcoders tutors that were used to carry out the task and setup the server. Except for a few files, 95% of the file structure was created by Nate and myself.
 
 Steve
 
