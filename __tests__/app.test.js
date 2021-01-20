@@ -13,7 +13,7 @@ beforeEach(() => {
 describe('/api', () => {
     describe('/', () => {
         describe('GET requests', () => {
-            it('GET 200 - returns a welcome message when on the homepage', () => {
+            it('GET 200 - returns a json representation of all the endpoints on the server', () => {
                 return request(app)
                     .get('/api/')
                     .expect(200)

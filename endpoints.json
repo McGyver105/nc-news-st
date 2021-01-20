@@ -16,8 +16,8 @@
       "user": 
       {
         "username": "tickle122",
-        "name": "grumpy19",
-        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013",
+        "name": "grumpy19"
       }
     } 
   },
@@ -27,11 +27,14 @@
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 1,
           "title": "Seafood substitutions are increasing",
+          "body": "Text from the article..",
+          "votes": 1,
           "topic": "cooking",
           "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1527695953341,
+          "comment_count": 5
         }
       ]
     }
@@ -62,13 +65,14 @@
     "queries": [],
     "exampleResponse": {
       "article": {
-        "author": "jessjelly",
         "article_id": 1,
         "title": "Running a Node App",
         "body": "This is part two of a series ...",
+        "votes": 0,
         "topic": "coding",
+        "author": "jessjelly",
         "created_at": 1527695953341,
-        "votes": 0
+        "comment_count": 0
       }
     }
   },
@@ -80,13 +84,14 @@
     },
     "exampleResponse": {
       "article": {
-        "author": "jessjelly",
         "article_id": 1,
         "title": "Running a Node App",
         "body": "This is part two of a series ...",
+        "votes": 100,
         "topic": "coding",
-        "created_at": 1527695953341,
-        "votes": 100
+        "author": "jessjelly",
+        "created_at": 1527695953341
+        
       }
     }
   },
