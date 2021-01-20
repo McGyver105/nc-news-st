@@ -1,5 +1,17 @@
 # Northcoders News API
 
+This repository was originally created by Northcoders as an exercise in building a backend api server in preparation for the frontend work soon to commence. The initial setting up of the express server, sql database, and data migrations was carried out alongside Nate Masters - another trainee on my course.
+
+Once the Express server was setup, the end points and testing was conducted by myself before being push up and hosted on heroku.
+
+https://nc-news-project-st.herokuapp.com/api/
+
+Feel free to visit the hosted app - the link above will return a json object containing descriptions of all the current endpoints setup.
+
+Below are the original instructions from the Northcoders tutors that were used to carry out the task and setup the server.
+
+Steve
+
 ## Background
 
 We will be building an API for the purpose of accessing application data programmatically. The intention here is to mimick the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
@@ -166,7 +178,6 @@ GET /api/topics
 ---
 
 **Please now bid farewell to your pair and continue on this sprint working solo. Ensure that you fork your partner's repo so you don't run into merge conflicts.**
-
 
 ```http
 GET /api/users/:username
@@ -337,7 +348,6 @@ GET /api
 Make sure your application and your database is hosted using Heroku
 
 See the hosting.md file in this repo for more guidance
-
 
 #### Pagination
 
