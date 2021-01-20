@@ -4,8 +4,8 @@ exports.postComment = (req, res, next) => {
     const { article_id } = req.params;
     const { body } = req;
     addNewComment(article_id, body)
-        .then((postedComment) => {
-            res.status(200).send({ postedComment });
+        .then((comment) => {
+            res.status(200).send({ comment });
         })
         .catch(next);
 }

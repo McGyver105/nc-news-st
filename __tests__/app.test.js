@@ -18,7 +18,8 @@ describe('/api', () => {
                     .get('/api/')
                     .expect(200)
                     .then(({ body }) => {
-                    expect(body.msg).toBe('welcome to the nc-news-st homepage. please see the documentation for further requests')
+                        expect(typeof body.endpoints).toBe('object')
+                        expect(Array.isArray(body.endpoints)).toBe(false);
                 })
             })
         })
@@ -530,7 +531,7 @@ describe('/api', () => {
                     .send({ username: 'icellusedkars', body: 'b' })
                     .expect(200)
                     .then(({ body }) => {
-                        expect(body.postedComment).toEqual(
+                        expect(body.comment).toEqual(
                             expect.objectContaining({
                                 comment_id: expect.any(Number),
                                 author: expect.any(String),
