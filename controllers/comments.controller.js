@@ -3,6 +3,7 @@ const { addNewComment, selectCommentsByArticleId, patchCommentVotesById, deleteC
 exports.postComment = (req, res, next) => {
     const { article_id } = req.params;
     const { body } = req;
+    console.log(article_id, body)
     addNewComment(article_id, body)
         .then((comment) => {
             res.status(200).send({ comment });

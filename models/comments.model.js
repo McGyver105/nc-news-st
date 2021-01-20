@@ -3,8 +3,9 @@ const articlesRouter = require('../routers/articles.router');
 const { selectArticleById } = require('./articles.model');
 
 const addNewComment = (article_id, newComment) => {
-    return connection('comments')
+    return connection
         .insert({ article_id, author: newComment['username'], body: newComment['body'] })
+        .into('comments')
         .returning('*')
         .then(([postedComment]) => {
             return postedComment;
@@ -22,10 +23,6 @@ const selectCommentsByArticleId = (article_id, sorted_by = 'created_at', order =
             .where({ article_id })
             .orderBy(sorted_by, order)
         })
-
-/*
-    
-*/
 }
 
 const patchCommentVotesById = (comment_id, inc_votes) => {

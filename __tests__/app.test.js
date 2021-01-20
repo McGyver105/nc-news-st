@@ -579,7 +579,7 @@ describe('/api', () => {
                         expect(body.msg).toBe('field missing');
                     });
             })
-            it('POST 405 - responds with an internal server error when the path is spelt incorrectly', () => {
+            it('POST 405 - responds with a bad request when the path is spelt incorrectly', () => {
                 return request(app)
                     .post('/api/articles/2/commet')
                     .send({ username: 'butter_bridge', body: 'a' })

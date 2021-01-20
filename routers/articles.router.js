@@ -10,8 +10,10 @@ const { getArticleById,
 
 articlesRouter.route('/').get(getAllArticles).post(postNewArticle)
 
+articlesRouter.use('/:article_id/comments', commentsRouter);
+
 articlesRouter.route('/:article_id').get(getArticleById).patch(patchArticleById).delete(deleteArticleById)
 
-articlesRouter.use('/:article_id/comments', commentsRouter);
+
 
 module.exports = articlesRouter;
