@@ -1,6 +1,6 @@
 # Northcoders News API
 
-This repository was forked from one created by Northcoders, and the completed based on instructions and guidance from our tutors as an exercise in building a backend api server in preparation for the frontend work soon to commence. The initial setting up of the express server, sql database, and data migrations was carried out alongside Nate Masters - another trainee on my course.
+This repository was forked from one created by Northcoders and completed based on instructions and guidance from our tutors as an exercise in building a backend api server in preparation for the frontend work soon to commence. The initial setting up of the express server, sql database, and data migrations was carried out alongside Nate Masters - another trainee on my course.
 
 Once the Express server was setup, the end points and testing was conducted solely by myself before being push up and hosted on heroku.
 
