@@ -138,23 +138,66 @@ describe('/api', () => {
                 })
             })
         })
+        describe('POST requests', () => {
+            it('POST 200 - accepts a post request and responds with the posted user', () => {
+                return request(app)
+                    .post('/api/users')
+                    .send({
+                        username: 'new user',
+                        avatar_url: 'https://http.cat/404',
+                        name: 'Steve'
+                    })
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.user).toEqual(
+                            expect.objectContaining({
+                                username: expect.any(String),
+                                avatar_url: expect.any(String),
+                                name: expect.any(String)
+                        })
+                    )
+                })
+            });
+            it('POST 422 - responds unprocessable when the username is empty', () => {
+                return request(app)
+                    .post('/api/users')
+                    .send({
+                        avatar_url: 'https://http.cat/404',
+                        name: 'Steve'
+                    })
+                .expect(422)
+            })
+            it('POST 422 - responds unprocessable when the avatar_url is empty', () => {
+                return request(app)
+                    .post('/api/users')
+                    .send({
+                        username: 'new user',
+                        name: 'Steve'
+                    })
+                    .expect(422);
+            })
+            it('POST 422 - responds unprocessable when the name is empty', () => {
+                return request(app)
+                    .post('/api/users')
+                    .send({
+                        username: 'new user',
+                        avatar_url: 'https://http.cat/404'
+                    })
+                    .expect(422);
+            })
+        })
         describe('Invalid requests', () => {
             it('GET 405 - responds method not allowed when the path is incorrect', () => {
                 return request(app)
                     .get('/api/suers')
                     .expect(405);
             });
-            it('GET 405 - responds method not allowed to all post requests', () => {
-                return request(app)
-                    .post('/api/users')
-                    .expect(405);
-            });
-            it('GET 405 - responds method not allowed to all patch requests', () => {
+            it('PATCH 405 - responds method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/users')
                     .expect(405);
             });
-            it('GET 405 - responds method not allowed to all delete requests', () => {
+            it('DELETE 405 - responds method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/users')
                     .expect(405);

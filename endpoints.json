@@ -10,7 +10,7 @@
     }
   },
   "POST /api/topics": {
-    "description": "accepts an object as per the example, and returns an object with the created posted topic",
+    "description": "accepts an object as per the example, and returns an object with the created topic",
     "queries": [],
     "exampleRequest": {
       "slug": "new topic name",
@@ -32,6 +32,22 @@
         "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
         "name": "paul"
       }]
+    }
+  },
+  "POST /api/users": {
+    "description":"accepts an object as per the example, and returns an object with the created user",
+    "queries": [],
+    "exampleRequest": {
+      "username": "new user",
+      "avatar_url": "https://http.cat/404",
+      "name": "Steve"
+    },
+    "exampleResponse" : {
+      "user": {
+        "username": "new user",
+        "avatar_url": "https://http.cat/404",
+        "name": "Steve"
+      }
     }
   },
   "GET /api/users/:username": {

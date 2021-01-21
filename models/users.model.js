@@ -6,6 +6,16 @@ const selectAllUsers = () => {
         .from('users');
 }
 
+const insertNewUser = (newUser) => {
+    return connection
+        .insert(newUser)
+        .into('users')
+        .returning('*')
+        .then(([user]) => {
+            return user;
+    })
+}
+
 const selectUserById = (username) => {
     const usernameRegex = /[A-z]+/;
     if (usernameRegex.test(username) === false) {
@@ -23,4 +33,4 @@ const selectUserById = (username) => {
         });
 }
 
-module.exports = { selectUserById, selectAllUsers };
+module.exports = { selectUserById, selectAllUsers, insertNewUser };
