@@ -753,6 +753,59 @@ describe('/api', () => {
                         expect(body.msg).toBe('invalid order');
                     });
             })
+            it('GET 200 - accepts a limit query and responds with the specified number of comments', () => {
+                const limit = 5;
+                return request(app)
+                    .get(`/api/articles/1/comments?limit=${limit}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                    expect(body.comments).toHaveLength(limit)
+                })
+            })
+            it('GET 200 - defaults to a limit of 10 when no limit is specified', () => {
+                return request(app)
+                    .get('/api/articles/1/comments')
+                    .expect(200)
+                    .then(({ body }) => {
+                    expect(body.comments).toHaveLength(10)
+                })
+            })
+            it('GET 200 - responds with an array of all articles when the limit is above the total number', () => {
+                const limit = 1000;
+                return request(app)
+                    .get(`/api/articles/1/comments?limit=${limit}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.comments).toHaveLength(13);
+                    });
+            })
+            it('GET 422 - responds with unprocessable when the limit query includes non-digits', () => {
+                const limit = 'onethousand1000';
+                return request(app)
+                    .get(`/api/articles/1/comments?limit=${limit}`)
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('A valid integer must be provided');
+                    });
+            });
+            it('GET 200 - accepts a page query and responds with comments from that page', () => {
+                const page = 1;
+                return request(app)
+                    .get(`/api/articles/1/comments?page=${page}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                    expect(body.comments).toHaveLength(10)
+                })
+            })
+            it('GET 422 - responds unprocessable when the page includes non-digits', () => {
+                const page = 'two2';
+                return request(app)
+                    .get(`/api/articles/1/comments?page=${page}`)
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('A valid integer must be provided');
+                    });
+            })
         })
         describe('Invalid requests', () => {
             it('PATCH - 405 returns method not allowed to all patch requests', () => {

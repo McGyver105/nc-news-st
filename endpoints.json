@@ -100,7 +100,7 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "accepts an object as per the example, and returns an object with the newly posted comment",
-    "queries": [],
+    "queries": ["limit", "page"],
     "exampleRequest": {
       "username": "tickle122",
       "body": "comment text"
