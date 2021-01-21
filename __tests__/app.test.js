@@ -120,6 +120,47 @@ describe('/api', () => {
             });
         })
     })
+    describe('/users', () => {
+        describe('GET requests', () => {
+            it('GET 200 - responds with an array of all users', () => {
+                return request(app)
+                    .get('/api/users')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(Array.isArray(body.users))
+                        expect(body.users[0]).toEqual(
+                            expect.objectContaining({
+                                username: expect.any(String),
+                                avatar_url: expect.any(String),
+                                name: expect.any(String)
+                            })
+                        )
+                })
+            })
+        })
+        describe('Invalid requests', () => {
+            it('GET 405 - responds method not allowed when the path is incorrect', () => {
+                return request(app)
+                    .get('/api/suers')
+                    .expect(405);
+            });
+            it('GET 405 - responds method not allowed to all post requests', () => {
+                return request(app)
+                    .post('/api/users')
+                    .expect(405);
+            });
+            it('GET 405 - responds method not allowed to all patch requests', () => {
+                return request(app)
+                    .patch('/api/users')
+                    .expect(405);
+            });
+            it('GET 405 - responds method not allowed to all delete requests', () => {
+                return request(app)
+                    .delete('/api/users')
+                    .expect(405);
+            });
+        })
+    })
     describe('/users/:username', () => {
         describe('GET requests', () => {
             it('GET 200 - responds with a user object for that id', () => {
