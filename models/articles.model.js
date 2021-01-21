@@ -38,9 +38,9 @@ const removeHouseById = (article_id) => {
         });
 }
 
-const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, topic, limit = 10) => {
+const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, topic, limit = 10, page = 1) => {
     const limitRegex = /\D/;
-    if (limitRegex.test(limit)) throw ({status: 422, msg: 'A valid integer must be provided to limit'})
+    if (limitRegex.test(limit) || limitRegex.test(page)) throw ({status: 422, msg: 'A valid integer must be provided'})
     if (order !== 'asc' && order !== 'desc') throw ({ status: 400, msg: 'input field invalid' });
     else return connection
         .select('articles.*')
@@ -50,6 +50,7 @@ const selectAllArticles = (sorted_by = 'created_at', order = 'desc', author, top
         .groupBy('articles.article_id')
         .orderBy(sorted_by, order)
         .limit(limit)
+        .offset(limit * (page - 1))
         .modify(query => {
             if (author) query.where('articles.author', author);
             if (topic) query.where('articles.topic', topic);

@@ -266,7 +266,7 @@ describe('/api', () => {
                     .get(`/api/articles?limit=${limit}`)
                     .expect(422)
                     .then(({ body }) => {
-                    expect(body.msg).toBe('A valid integer must be provided to limit')
+                    expect(body.msg).toBe('A valid integer must be provided')
                 })
             });
             it('GET 422 - returns unprocessable when the limit includes both number and letters', () => {
@@ -275,9 +275,41 @@ describe('/api', () => {
                     .get(`/api/articles?limit=${limit}`)
                     .expect(422)
                     .then(({ body }) => {
-                        expect(body.msg).toBe('A valid integer must be provided to limit');
+                        expect(body.msg).toBe('A valid integer must be provided');
                     });
             })
+            it('GET 200 - returns an array of articles starting at the specified page', () => {
+                const page = 1;
+                return request(app)
+                    .get(`/api/articles?page=${page}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(10);
+                    });
+            });
+            it('GET 200 - returns an array of articles starting a a page higher than 1', () => {
+                const page = 2;
+                return request(app)
+                    .get(`/api/articles?page=${page}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(2);
+                    });
+            })
+            it('GET 200 - defaults to the first page when no page is specified', () => {
+                return request(app)
+                    .get('/api/articles')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(10)
+                })
+            })
+            it('GET 422 - returns unprocessable when the page specified is invalid', () => {
+                const page = 'invalid2';
+                return request(app)
+                    .get(`/api/articles?page=${page}`)
+                    .expect(422)
+            });
         })
         describe('POST requests', () => {
             it('POST 200 - adds a new article to the database and returns an object on a key of created article', () => {

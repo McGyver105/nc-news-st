@@ -39,7 +39,8 @@ exports.getAllArticles = (req, res, next) => {
     const { author } = req.query;
     const { topic } = req.query;
     const { limit } = req.query;
-    selectAllArticles(sorted_by, order, author, topic, limit)
+    const { page } = req.query;
+    selectAllArticles(sorted_by, order, author, topic, limit, page)
         .then(articles => {
             res.status(200).send({ articles });
         })
