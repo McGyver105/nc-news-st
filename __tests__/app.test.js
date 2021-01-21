@@ -234,6 +234,50 @@ describe('/api', () => {
                         expect(body.msg).toBe('invalid search term');
                     });
             })
+            it('GET 200 - accepts a limit query and responds with an array under this limit', () => {
+                const limit = 5;
+                return request(app)
+                    .get(`/api/articles?limit=${limit}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles.length).toBeLessThanOrEqual(limit);
+                    });
+            })
+            it('GET 200 - defaults to a limit of 10 articles maximum', () => {
+                return request(app)
+                    .get('/api/articles')
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.articles).toHaveLength(10);
+                    });
+            })
+            it('GET 200 - returns all articles when the limit is above the total number', () => {
+                const limit = 20;
+                return request(app)
+                    .get(`/api/articles?limit=${limit}`)
+                    .expect(200)
+                    .then(({ body }) => {
+                    expect(body.articles).toHaveLength(12)
+                })
+            })
+            it('GET 422 - returns unprocessable when the limit query is not a digit', () => {
+                const limit = 'invalid';
+                return request(app)
+                    .get(`/api/articles?limit=${limit}`)
+                    .expect(422)
+                    .then(({ body }) => {
+                    expect(body.msg).toBe('A valid integer must be provided to limit')
+                })
+            });
+            it('GET 422 - returns unprocessable when the limit includes both number and letters', () => {
+                const limit = 'invalid10';
+                return request(app)
+                    .get(`/api/articles?limit=${limit}`)
+                    .expect(422)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('A valid integer must be provided to limit');
+                    });
+            })
         })
         describe('POST requests', () => {
             it('POST 200 - adds a new article to the database and returns an object on a key of created article', () => {
