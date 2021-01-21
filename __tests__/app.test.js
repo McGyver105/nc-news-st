@@ -24,17 +24,17 @@ describe('/api', () => {
             })
         })
         describe('Invalid requests', () => {
-            it('POST - 405 returns method not allowed to all post requests', () => {
+            it('POST 405 - returns method not allowed to all post requests', () => {
                 return request(app)
                     .post('/api/')
                     .expect(405)
             });
-            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+            it('PATCH 405 - returns method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/')
                     .expect(405)
             });
-            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+            it('DELETE 405 - returns method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/')
                     .expect(405)
@@ -43,7 +43,7 @@ describe('/api', () => {
     })
     describe('/topics', () => {
         describe('GET requests', () => {
-            it('GET - 200 Returns an array of topic objects', () => {
+            it('GET 200 - Returns an array of topic objects', () => {
                 return request(app)
                 .get('/api/topics')
                 .expect(200).then(({body}) => {
@@ -56,24 +56,64 @@ describe('/api', () => {
                     )
                 })
             })
-            it('GET - 405 Gives error message for the wrong path', () => {
+            it('GET 405 - Gives error message for the wrong path', () => {
                 return request(app)
                     .get('/api/toics')
                     .expect(405);
             })
         })
-        describe('Invalid requests', () => {
-            it('POST - 405 returns method not allowed to all post requests', () => {
+        describe('POST requests', () => {
+            it('POST 200 - returns an object with the posted topic', () => {
                 return request(app)
                     .post('/api/topics')
-                    .expect(405)
+                    .send({ slug: 'a new topic', description: 'some text' })
+                    .expect(200)
+                    .then(({ body }) => {
+                        expect(body.topic).toEqual(
+                            expect.objectContaining({
+                                slug: expect.any(String),
+                                description: expect.any(String)
+                        })
+                    )
+                })
+            })
+            it('POST 422 - returns unprocessable when the request has no body', () => {
+                return request(app)
+                    .post('/api/topics')
+                    .expect(422);
             });
-            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+            it('POST 400 - returns bad request when the slug is invalid', () => {
+                return request(app)
+                    .post('/api/topics')
+                    .send({ slug: null, desription: 'some text' })
+                    .expect(400)
+                    .then(({ body }) => {
+                        expect(body.msg).toBe('input field invalid');
+                    });
+            })
+            it('POST 422 - returns bad request when the description is empty', () => {
+                return request(app)
+                    .post('/api/topics')
+                    .send({ slug: 'topic name', description: null })
+                    .expect(422)
+                    .then(({ body }) => {
+                    expect(body.msg).toBe('field missing')
+                })
+            })
+            it('POST 405 - returns method not allowed when the path is spelt incorrectly', () => {
+                return request(app)
+                    .post('/api/toicp')
+                    .send({ slug: 'new topic', description: 'some text' })
+                    .expect(405);
+            });
+        })
+        describe('Invalid requests', () => {
+            it('PATCH 405 - returns method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/topics')
                     .expect(405)
             });
-            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+            it('DELETE 405 - returns method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/topics')
                     .expect(405)
@@ -82,7 +122,7 @@ describe('/api', () => {
     })
     describe('/users/:username', () => {
         describe('GET requests', () => {
-            it('GET - 200 - responds with a user object for that id', () => {
+            it('GET 200 - responds with a user object for that id', () => {
                 return request(app)
                     .get('/api/users/rogersop')
                     .expect(200)
@@ -96,29 +136,29 @@ describe('/api', () => {
                         )
                 })
             })
-            it('GET - 404 - responds with not found for non-existant usernames', () => {
+            it('GET 404 - responds with not found for non-existant usernames', () => {
                 return request(app)
                     .get('/api/users/tickle122')
                     .expect(404);
             })
-            it('GET - 400 - responds with a bad request for invalid usernames (usernames must have letters and/or numbers)', () => {
+            it('GET 400 - responds with a bad request for invalid usernames (usernames must have letters and/or numbers)', () => {
                 return request(app)
                     .get('/api/users/123456')
                     .expect(400);
             })
         })
         describe('Invalid requests', () => {
-            it('POST - 405 returns method not allowed to all post requests', () => {
+            it('POST 405 - returns method not allowed to all post requests', () => {
                 return request(app)
                     .post('/api/users/rogersop')
                     .expect(405)
             });
-            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+            it('PATCH 405 - returns method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/users/rogersop')
                     .expect(405)
             });
-            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+            it('DELETE 405 - returns method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/users/rogersop')
                     .expect(405)
@@ -415,12 +455,12 @@ describe('/api', () => {
             });
         })
         describe('Invalid requests', () => {
-            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+            it('PATCH 405 - returns method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/articles')
                     .expect(405)
             });
-            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+            it('DELETE 405 - returns method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/articles')
                     .expect(405)
@@ -592,7 +632,7 @@ describe('/api', () => {
             })
         })
         describe('Invalid requests', () => {
-            it('POST - 405 returns method not allowed to all post requests', () => {
+            it('POST 405 - returns method not allowed to all post requests', () => {
                 return request(app)
                     .post('/api/articles/1')
                     .expect(405)
@@ -808,12 +848,12 @@ describe('/api', () => {
             })
         })
         describe('Invalid requests', () => {
-            it('PATCH - 405 returns method not allowed to all patch requests', () => {
+            it('PATCH 405 - returns method not allowed to all patch requests', () => {
                 return request(app)
                     .patch('/api/articles/5/comments')
                     .expect(405)
             });
-            it('DELETE - 405 returns method not allowed to all delete requests', () => {
+            it('DELETE 405 - returns method not allowed to all delete requests', () => {
                 return request(app)
                     .delete('/api/articles/5/comments')
                     .expect(405)
@@ -929,12 +969,12 @@ describe('/api', () => {
             })
         })
         describe('Invalid requests', () => {
-            it('GET - 405 returns method not allowed to all get requests', () => {
+            it('GET 405 - returns method not allowed to all get requests', () => {
                 return request(app)
                     .get('/api/comments/1')
                     .expect(405)
             });
-            it('POST - 405 returns method not allowed to all post requests', () => {
+            it('POST 405 - returns method not allowed to all post requests', () => {
                 return request(app)
                     .post('/api/comments/1')
                     .expect(405)
