@@ -1,4 +1,7 @@
 {
+  "GET /": {
+    "description": "serves up a welcome message directing the user to this location"
+  },
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },

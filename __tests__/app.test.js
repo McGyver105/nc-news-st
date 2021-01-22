@@ -9,7 +9,40 @@ afterAll(() => {
 beforeEach(() => {
     return connection.seed.run();
 });
-
+describe('/', () => {
+    describe('GET requests', () => {
+        it('GET 200 - return the welcome message', () => {
+            return request(app)
+                .get('/')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.welcome).toEqual(
+                        expect.objectContaining({
+                            description: expect.any(String),
+                            apiPath: expect.any(String)
+                        })
+                    );
+                });
+        })
+    })
+    describe('Invalid requests', () => {
+        it('POST 405 - returns method not allowed to all post requests', () => {
+            return request(app)
+                .post('/')
+                .expect(405)
+        });
+        it('PATCH 405 - returns method not allowed to all patch requests', () => {
+            return request(app)
+                .patch('/')
+                .expect(405)
+        });
+        it('DELETE 405 - returns method not allowed to all delete requests', () => {
+            return request(app)
+                .delete('/')
+                .expect(405)
+        });
+    })
+})
 describe('/api', () => {
     describe('/', () => {
         describe('GET requests', () => {

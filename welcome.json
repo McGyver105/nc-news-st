@@ -1,0 +1,4 @@
+{
+    "description": "Welcome to the nc-news-st server hosted by the lovely people at heroku. Please proceed to the /api path to view the available endpoints on this server.",
+    "apiPath": "https://nc-news-project-st.herokuapp.com/api"
+}
